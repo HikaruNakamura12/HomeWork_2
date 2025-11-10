@@ -12,6 +12,9 @@ namespace HomeWork_2.DAL
         private string ConnectionString => "";
 
         public DbSet <Command> Commands { get; set; }
+        public DbSet <Player> Players { get; set; }
+        public DbSet<Matches> Matches { get; set; }
+        public DbSet<Goal> Goals { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

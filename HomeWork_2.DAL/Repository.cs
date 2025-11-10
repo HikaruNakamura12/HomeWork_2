@@ -31,7 +31,7 @@ namespace HomeWork_2.DAL
             dBContext.Remove(command);
             dBContext.SaveChanges();
         }
-
+        // for commands
         public List<Command> GetAll() { return dBContext.Commands.ToList();}
 
         public List<Command> GetByName(string name)
@@ -65,6 +65,56 @@ namespace HomeWork_2.DAL
         {
             var max = dBContext.Commands.Max(w => w.Score);
             return dBContext.Commands.Where(n => n.Score == max).ToList();
+        }
+        // for Matches
+
+        public Matches GetMatchById(int id)
+        {
+            return dBContext.Matches.Where(m => m.Id == id).FirstOrDefault();
+        }
+        public Matches GetMatchByYear(int Year)
+        {
+            return dBContext.Matches.Where(m => m.MatchYear == Year).FirstOrDefault();
+        }
+        public List<Matches> GetMatchesByCommand(string command)
+        {
+            return dBContext.Matches.Where(c => c.Command1.Name == command || c.Command2.Name == command).ToList();
+        }
+
+        public void AddMatch(Matches match)
+        {
+            dBContext.Matches.Add(match);
+            dBContext.SaveChanges();
+        }
+        //
+
+        public void UpdateMatch(Matches match)
+        {
+            dBContext.Matches.Update(match);
+            dBContext.SaveChanges();
+        }
+
+        public void DeleteMatch(Matches match)
+        {
+            dBContext.Matches.Remove(match);
+            dBContext.SaveChanges();
+        }
+
+        public List<Matches> GetAllMatches()
+        {
+            return dBContext.Matches.ToList();
+        }
+
+        public Matches GetMatchByCommandsAndDate(string command1, string command2, int year)
+        {
+            return dBContext.Matches.FirstOrDefault(m => (m.Command1.Name == command1 && m.Command2.Name == command2 && m.MatchYear == year) || (m.Command1.Name == command2 && m.Command2.Name == command1 && m.MatchYear == year));
+        }
+
+        // Goal
+        public Player GetPlayerByGoalData(int year)
+        {
+            var goal = dBContext.Goals.FirstOrDefault(p => p.Year == year);
+            return dBContext.Players.FirstOrDefault(p => p.Id == goal.PlayerId);
         }
     }
 }
