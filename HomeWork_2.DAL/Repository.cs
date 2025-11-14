@@ -81,12 +81,242 @@ namespace HomeWork_2.DAL
             return dBContext.Matches.Where(c => c.Command1.Name == command || c.Command2.Name == command).ToList();
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public List<Player> Top3ScorerByCommand(int commandId)
+        {
+            var players = dBContext.Players.Where(p => p.CommandId == commandId).ToList();
+            var goals = dBContext.Goals.ToList();
+            var playerGoals = new List<(Player Player, int Goals)>();
+
+            foreach (var player in players)
+            {
+                int goalCount = 0;
+                foreach (var goal in goals)
+                {
+                    if (goal.PlayerId == player.Id)
+                    {
+                        goalCount++;
+                    }
+                }
+                playerGoals.Add((player, goalCount));
+            }
+
+            return playerGoals.OrderByDescending(p => p.Goals).Take(3).Select(p => p.Player).ToList();
+        }
+        public Player GetTopScorerByCommand(int commandId)
+        {
+            var players = dBContext.Players.Where(p => p.CommandId == commandId).ToList();
+            var goals = dBContext.Goals.ToList();
+            var playerGoals = new List<(Player Player, int Goals)>();
+
+            foreach (var player in players)
+            {
+                int goalCount = 0;
+                foreach (var goal in goals)
+                {
+                    if (goal.PlayerId == player.Id)
+                    {
+                        goalCount++;
+                    }
+                }
+                playerGoals.Add((player, goalCount));
+            }
+
+            return playerGoals.OrderByDescending(p => p.Goals).Select(p => p.Player).FirstOrDefault();
+        }
+        public List<Player> GetTop3Scorers_ofAll()
+        {
+            var players = dBContext.Players.ToList();
+            var goals = dBContext.Goals.ToList();
+            var playerGoals = new List<(Player Player, int Goals)>();
+
+            foreach (var player in players)
+            {
+                int goalCount = 0;
+                foreach (var goal in goals)
+                {
+                    if (goal.PlayerId == player.Id)
+                    {
+                        goalCount++;
+                    }
+                }
+                playerGoals.Add((player, goalCount));
+            }
+
+            return playerGoals.OrderByDescending(p => p.Goals).Take(3).Select(p => p.Player).ToList();
+        }
+
+        public Player GetTopScorer_ofAll()
+        {
+            return GetTop3Scorers_ofAll().FirstOrDefault();
+        }
+
+        public List<Command> GetTop3Score_Commands()
+        {
+            var commands = dBContext.Commands.ToList();
+            var matches = dBContext.Matches.ToList();
+            var commandGoals = new List<(Command Command, int Goals)>();
+
+            foreach (var command in commands)
+            {
+                int goalsScored = 0;
+                foreach (var match in matches)
+                {
+                    if (match.First_Command_Id == command.Id)
+                        goalsScored += match.Cound_Goals_1;
+                    if (match.Second_Command_Id == command.Id)
+                        goalsScored += match.Count_Goals_2;
+                }
+                commandGoals.Add((command, goalsScored));
+            }
+
+            return commandGoals.OrderByDescending(c => c.Goals).Take(3).Select(c => c.Command).ToList();
+        }
+
+        public Command  GetTopScore_Commands()
+        {
+            return GetTop3Score_Commands().FirstOrDefault();
+        }
+        public List<Command> GetTop3Def_Commands()
+        {
+            var commands = dBContext.Commands.ToList();
+            var matches = dBContext.Matches.ToList();
+            var commandGoals = new List<(Command Command, int Goals)>();
+
+            foreach (var command in commands)
+            {
+                int goalsConceded = 0;
+                foreach (var match in matches)
+                {
+                    if (match.First_Command_Id == command.Id)
+                        goalsConceded += match.Count_Goals_2;
+                    if (match.Second_Command_Id == command.Id)
+                        goalsConceded += match.Cound_Goals_1;
+                }
+                commandGoals.Add((command, goalsConceded));
+            }
+
+            return commandGoals.OrderBy(c => c.Goals).Take(3).Select(c => c.Command).ToList();
+        }
+        public Command GetTopDef_Commands()
+        {
+            return GetTop3Def_Commands().FirstOrDefault();
+        }
+
+        public List<Command> GetTop3CommandsByPoints()
+        {
+            var commands = dBContext.Commands.ToList();
+            var matches = dBContext.Matches.ToList();
+            var commandPoints = new List<(Command Command, int Points)>();
+
+            foreach (var command in commands)
+            {
+                int points = 0;
+                foreach (var match in matches)
+                {
+                    if (match.First_Command_Id == command.Id)
+                    {
+                        if (match.Cound_Goals_1 > match.Count_Goals_2)
+                            points += 3;
+                        else if (match.Cound_Goals_1 == match.Count_Goals_2)
+                            points += 1;
+                    }
+                    else if (match.Second_Command_Id == command.Id)
+                    {
+                        if (match.Count_Goals_2 > match.Cound_Goals_1)
+                            points += 3;
+                        else if (match.Count_Goals_2 == match.Cound_Goals_1)
+                            points += 1;
+                    }
+                }
+                commandPoints.Add((command, points));
+            }
+
+            return commandPoints.OrderByDescending(c => c.Points).Take(3).Select(c => c.Command).ToList();
+        }
+        public Command GetTopCommandByPoints()
+        {
+            return GetTop3CommandsByPoints().FirstOrDefault();
+        }
+
+        public List<Command> GetTop3CommandBy_lose_Points()
+        {
+            var commands = dBContext.Commands.ToList();
+            var matches = dBContext.Matches.ToList();
+            var commandPoints = new List<(Command Command, int Points)>();
+
+            foreach (var command in commands)
+            {
+                int points = 0;
+                foreach (var match in matches)
+                {
+                    if (match.First_Command_Id == command.Id)
+                    {
+                        if (match.Cound_Goals_1 > match.Count_Goals_2)
+                            points += 3;
+                        else if (match.Cound_Goals_1 == match.Count_Goals_2)
+                            points += 1;
+                    }
+                    else if (match.Second_Command_Id == command.Id)
+                    {
+                        if (match.Count_Goals_2 > match.Cound_Goals_1)
+                            points += 3;
+                        else if (match.Count_Goals_2 == match.Cound_Goals_1)
+                            points += 1;
+                    }
+                }
+                commandPoints.Add((command, points));
+            }
+
+            return commandPoints.OrderBy(c => c.Points).Take(3).Select(c => c.Command).ToList();
+        }
+
+        public Command GetTopCommandBy_lose_Points()
+        {
+            return GetTop3CommandBy_lose_Points().FirstOrDefault();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public void AddMatch(Matches match)
         {
             dBContext.Matches.Add(match);
             dBContext.SaveChanges();
         }
-        //
 
         public void UpdateMatch(Matches match)
         {
@@ -98,6 +328,48 @@ namespace HomeWork_2.DAL
         {
             dBContext.Matches.Remove(match);
             dBContext.SaveChanges();
+        }
+
+        public void GenerateRandomMatch()
+        {
+            var random = new Random();
+            var comands = dBContext.Commands.ToList();
+            var existMatchs = dBContext.Matches.ToList();
+
+            var command1 = comands[random.Next(comands.Count)];
+            var command2 = comands[random.Next(comands.Count)];
+
+            while(command1.Id == command2.Id)
+            {
+                command2 = comands[random.Next(comands.Count)];
+            }
+
+            bool check = false;
+            foreach(var match in existMatchs)
+            {
+                if ((match.First_Command_Id == command1.Id && match.Second_Command_Id == command2.Id) || (match.First_Command_Id == command2.Id && match.Second_Command_Id == command1.Id))
+                {
+                    check = true; break;
+                }
+            }
+            if (check == false)
+            {
+                var match = new Matches
+                {
+                    First_Command_Id = command1.Id,
+                    Second_Command_Id = command2.Id,
+                    Cound_Goals_1 = random.Next(0, 6),
+                    Count_Goals_2 = random.Next(0, 6),
+                    MatchYear = random.Next(1800, 2025)
+                };
+                dBContext.Matches.Add(match);
+                dBContext.SaveChanges();
+                Console.WriteLine($"Generated match: {command1.Name} - {command2.Name}");
+            }
+            else
+            {
+                Console.WriteLine("Generation cancel");
+            }
         }
 
         public List<Matches> GetAllMatches()

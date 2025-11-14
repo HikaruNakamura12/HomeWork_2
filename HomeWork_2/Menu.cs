@@ -1,9 +1,10 @@
-﻿using System;
+﻿using HomeWork_2.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using HomeWork_2.DAL;
 
 namespace HomeWork_2
 {
@@ -255,6 +256,10 @@ namespace HomeWork_2
                 Console.WriteLine("Match was delete");
             }
         }
+        private void GenerateMatch()
+        {
+            rep.GenerateRandomMatch();
+        }
         private void ShowMatchInfoID()
         {
             Console.Write("Match Id: ");
@@ -303,13 +308,104 @@ namespace HomeWork_2
             Console.WriteLine($"{player.Id} - {player.PlayerNumber} - {player.FName} - {player.FName}");
         }
 
+        private void Top3ScorerByCommand()
+        {
+            Console.Write("Enter command ID: ");
+            int commandId = Convert.ToInt32(Console.ReadLine());
+            var scorers = rep.Top3ScorerByCommand(commandId);
+
+            Console.WriteLine($"Top 3 scorers for command {commandId}:");
+            foreach (var player in scorers)
+            { 
+                Console.WriteLine($"{player.FName} - {player.Position} -  {player.PlayerNumber}");
+            }
+        }
+
+        private  void TopScorerByCommand()
+        {
+            Console.Write("Enter command ID: ");
+            int commandId = Convert.ToInt32(Console.ReadLine());
+            var scorers = rep.GetTopScorerByCommand(commandId);
+            Console.WriteLine($"{scorers.FName} - {scorers.Position} -  {scorers.PlayerNumber}");
+        }
+        private void ShowTop3Scorers()
+        {
+            var scorers = rep.GetTop3Scorers_ofAll();
+            Console.WriteLine("Top 3 scorers of all:");
+            foreach (var player in scorers)
+            {
+                Console.WriteLine($"{player.FName} - Team: {player.Comand.Name}, Position: {player.Position}");
+            }
+        }
+        private void ShowTopScorer()
+        {
+            var  player = rep.GetTopScorer_ofAll();
+            Console.WriteLine($"{player.Id} - {player.FName} - {player.Position}");
+        }
+
+        private void ShowTop3ScoreCommands()
+        {
+            var commands = rep.GetTop3Score_Commands();
+            Console.WriteLine("Top 3 scoring commands:");
+            foreach (var command in commands)
+            {
+                Console.WriteLine($"{command.Name} - City: {command.City}");
+            }
+        }
+
+        private void ShowTopScoreCommand()
+        {
+            var commands = rep.GetTopScore_Commands();
+            Console.WriteLine($"{commands.Id} - {commands.Name}  - {commands.Won} - {commands.Draw} - {commands.Lose}");
+        }
+
+        private void ShowTop3DefensCommands()
+        {
+            var commands = rep.GetTop3Def_Commands();
+            Console.WriteLine("Top 3 defensive commands (least conceded):");
+            foreach (var command in commands)
+            {
+                Console.WriteLine($"{command.Name} - City: {command.City}");
+            }
+        }
+        private void ShowTopDef_commands()
+        {
+            var command = rep.GetTopDef_Commands();
+            Console.WriteLine($"{command.Id} - {command.Name} - City {command.City}");
+        }
+        private void ShowTop3Commands_points()
+        {
+            var commands = rep.GetTop3CommandsByPoints();
+            Console.WriteLine("Top 3 commands by points:");
+            foreach (var command in commands)
+            {
+                Console.WriteLine($"{command.Name} - Points: {command.Score}");
+            }
+        }
+
+        private void ShowTopCommand_points()
+        {
+            var commands = rep.GetTopCommandByPoints();
+            Console.WriteLine($"{commands.Name} - points {commands.Score}");
+        }
+
+        private void ShowTop3_commands_lose_points()
+        {
+            var commands = rep.GetTop3CommandBy_lose_Points();
+            Console.WriteLine("Bottom 3 commands by points:");
+            foreach (var command in commands)
+            {
+                Console.WriteLine($"{command.Name} - Points: {command.Score}");
+            }
+        }
+
 
         public void Mmenu()
         {
             bool flag = true;
             while (flag)
             {
-                Console.WriteLine("0.Exit\n1.Add Comand\n2.Update Command\n3.Delete Command\n4.Add Match\n5.Update Match\n6. Delete Match");
+                Console.WriteLine("0.Exit\n1.Add Comand\n2.Update Command\n3.Delete Command\n4.Add Match\n5.Update Match\n6. Delete Match\n7.Generate Match\n8.Top 3 Scorer by Command\n9.Top Scorer by Command\n10.Top 3 Scorers of all\n 11.Top Scorer of all\n12.Top 3 score by commands\n13.Top Score command\n14.Top Defensive commands\n15.Top Defensive command\n16.Top 3 commands by points\n17.Top command by points\n18.Top 3 lose commands points\n");
                 string choice = Console.ReadLine();
                 switch(choice)
                 {
@@ -327,6 +423,30 @@ namespace HomeWork_2
                         ChangeMatch(); break;
                     case "6":
                         DeleteMatch(); break;
+                    case "7":
+                        GenerateMatch(); break;
+                    case "8":
+                        Top3ScorerByCommand(); break;
+                    case "9":
+                        TopScorerByCommand(); break;
+                    case "10":
+                        ShowTop3Scorers(); break;
+                    case "11":
+                        ShowTopScorer(); break;
+                    case "12":
+                        ShowTop3ScoreCommands(); break;
+                    case "13":
+                        ShowTopScoreCommand(); break;
+                    case "14":
+                        ShowTop3DefensCommands(); break;
+                    case "15":
+                        ShowTopDef_commands(); break;
+                    case "16":
+                        ShowTop3Commands_points(); break;
+                    case "17":
+                        ShowTopCommand_points(); break;
+                    case "18":
+                        ShowTop3_commands_lose_points(); break;
                 }
             }
         }

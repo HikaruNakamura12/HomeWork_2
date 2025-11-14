@@ -10,6 +10,7 @@ namespace HomeWork_2.DAL
     public class AppDBcontext : DbContext
     {
         private string ConnectionString => "";
+        private string TEST_ConnectionString => "";
 
         public DbSet <Command> Commands { get; set; }
         public DbSet <Player> Players { get; set; }
@@ -20,7 +21,7 @@ namespace HomeWork_2.DAL
         {
 
             optionsBuilder.UseSqlServer(ConnectionString);
-
+            //optionsBuilder.UseSqlServer(TEST_ConnectionString);
         }
     }
 }
